@@ -1,0 +1,77 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "blood-bank-api"
+version = "0.1.0"
+description = "Blood Bank Web App — FastAPI backend (Phase 1: Foundation)"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi==0.162.6",
+    "uvicorn[standard]==0.54.0",
+    "sqlalchemy==2.1.8",
+    "alembic==1.20.1",
+    "pydantic==2.14.3",
+    "pydantic-settings==2.16.3",
+    "psycopg[binary]==3.3.9",
+    "pyjwt==2.15.1",
+    "argon2-cffi==25.1.0",
+    "pyotp==2.10.0",
+    "cryptography==50.0.2",
+    "slowapi==0.1.10",
+    "celery==5.7.0",
+    "redis==8.1.0",
+    "faker==40.54.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==9.2.0",
+    "httpx==0.28.1",
+    "ruff==0.17.5",
+    "mypy==2.4.1",
+    "pip-audit==2.10.1",
+    "types-redis==4.6.0.20241004",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+# Alembic generates the migration files (incl. the docstring header and
+# `typing` imports); they are not linted or formatted.
+exclude = ["alembic/versions"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]
+"app/modules/*/router.py" = ["B008"]
+"app/core/deps.py" = ["B008"]
+
+[tool.mypy]
+strict = true
+python_version = "3.12"
+warn_return_any = true
+warn_unused_ignores = true
+ignore_missing_imports = false
+show_error_codes = true
+
+[[tool.mypy.overrides]]
+module = "slowapi.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "celery.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "faker.*"
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+filterwarnings = ["ignore::DeprecationWarning"]
